@@ -1,27 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
     SafeAreaView, 
     Text, 
     StyleSheet, 
-    Image, 
+    FlatList, 
     TouchableOpacity,
     Dimensions, 
-    View
+    View,
+    Button,
+    Alert
 } from 'react-native'
 
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import api from '../services/api';
 
+interface TagsProps {
+    id: string;
+    name: string;
+    created_at: Date;
+    updated_at: Date;
+    name_custom: string;
+}
+
 export function Tags(){
+    const [tags, setTags] = useState<TagsProps[]>([])
+
     const navigation = useNavigation();
 
     function handleStart(){
         navigation.navigate('UserIdentification')
     }
 
-    const { data } = await api.get(`tags`);
-
+    async function fechtTags(){
+        const { data } = await api.get(`tags`);
+        
+        setTags(data);
+    }
     return(
         <SafeAreaView 
             style={styles.container}
@@ -29,24 +44,18 @@ export function Tags(){
             <View
                 style={styles.wrapper}
             >
-                <Text 
-                    style={styles.title}
-                >
-                    
-                </Text>
-                {/*
-                <Image 
-                    source={wateringImg} 
-                    style={styles.image} 
-                    resizeMode="contain" 
+                <FlatList
+                    data={tags}
+                    keyExtractor={(item) => String(item.id)}
+                    renderItem={({ item }) => (
+                        <Button
+                            title={ item.name }
+                            onPress={() => Alert.alert('Tag')}
+                        />
+                    )}
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
                 />
-                */}
-                <Text 
-                    style={styles.subtitle}
-                >
-                    Envie elogios ao seus colegas de forma fácil e rapida.
-                    Nós cuidamos de lembrar para eles o quanto os mesmos são valorizados.
-                </Text>
 
                 <TouchableOpacity 
                     style={styles.button} 
