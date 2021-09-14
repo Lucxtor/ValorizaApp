@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Welcome } from '../pages/Welcome';
 import { UserIdentification } from '../pages/UserIdentification';
 import { Tags } from '../pages/Tags';
+import { Confirmation } from '../pages/Confirmation';
 
 const stackRoutes = createNativeStackNavigator();
 
@@ -30,6 +31,11 @@ const AppRoutes: React.FC = () => (
         <stackRoutes.Screen
             name="Tags"
             component={Tags}
+        />
+
+        <stackRoutes.Screen
+            name="Confirmation"
+            component={Confirmation}
         />
 
     </stackRoutes.Navigator>

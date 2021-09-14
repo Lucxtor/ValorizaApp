@@ -9,11 +9,14 @@ import {
     TouchableWithoutFeedback,
     Platform,
     Keyboard,
-    Alert
+    Alert,
+    TouchableOpacity
 } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
-// import AsyncStorage from '@react-native-async-storage/async-storage'
+import api from '../services/api';
+import {Feather} from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 // import { Button } from '../components/Button';
 
@@ -26,6 +29,7 @@ export function UserIdentification(){
     const [isFocused, setIsFocused] = useState(false);
     const [isFilled, setIsFilled] = useState(false);
     const [name, setName] = useState<string>();
+    const [pass, setPass] = useState<string>();
 
     function handleInputBlur(){
         setIsFocused(false);
@@ -36,23 +40,37 @@ export function UserIdentification(){
         setIsFocused(true);
     }
 
-    function handleInputChange(value: string){
+    function handleInputChangeName(value: string){
         setIsFilled(!!value);
         setName(value);
     }
 
+    function handleInputChangePass(value: string){
+        setIsFilled(!!value);
+        setPass(value);
+    }
+
+    async function handleLogin(){
+
+    }
+
     async function handleSubmit(){
-        if(!name)
-            return Alert.alert('Me conta como eu posso te chamar 😉');
+        if(!name || !pass )
+            return Alert.alert('Login e/ou senha invalidos');
         try{
-            //await AsyncStorage.setItem('@plantmanagere:user', name);
-            /*navigation.navigate('Confirmation', {
+            const bodyParameters = {
+                email: name,
+                password: pass
+            }
+            const { data } = await api.post(`authenticate`, bodyParameters)
+            await AsyncStorage.setItem('@ValorizaApp:userToken', data);
+            navigation.navigate('Confirmation', {
                 title: 'Tudo Prontinho',
                 subtitle: 'Agora vamos começar a cuidar das suas plantinhas com muito carinho!',
                 buttonTitle: 'Começar',
                 icon: 'smile',
-                nextScreen: 'PlantSelect'
-            });*/
+                nextScreen: 'Tags'
+            });
         }catch{
             return Alert.alert('Não foi possivel salvar o seu nome');
         }
@@ -92,7 +110,7 @@ export function UserIdentification(){
                                 placeholder="Digite seu nome"
                                 onBlur={handleInputBlur}
                                 onFocus={handleInputFocus}
-                                onChangeText={handleInputChange}
+                                onChangeText={handleInputChangeName}
                             />
                             <TextInput 
                                 style={[
@@ -101,10 +119,19 @@ export function UserIdentification(){
                                 placeholder="Digite sua senha"
                                 onBlur={handleInputBlur}
                                 onFocus={handleInputFocus}
-                                onChangeText={handleInputChange}
+                                onChangeText={handleInputChangePass}
                                 secureTextEntry={true}
                             />
                             <View style={styles.footer}>
+
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={handleSubmit}
+                            >
+                                <Feather 
+                                    name="chevron-right"
+                                />
+                            </TouchableOpacity>
                                 
                             </View>
                         

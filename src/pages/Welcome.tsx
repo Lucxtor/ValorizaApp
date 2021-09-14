@@ -16,7 +16,7 @@ export function Welcome(){
     const navigation = useNavigation();
 
     function handleStart(){
-        navigation.navigate('Tags')
+        navigation.navigate('UserIdentification')
     }
 
     return(

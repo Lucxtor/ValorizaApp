@@ -14,6 +14,7 @@ import {
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import api from '../services/api';
+import { TagButton } from '../components/TagButton';
 
 interface TagsProps {
     id: string;
@@ -33,10 +34,12 @@ export function Tags(){
     }
 
     async function fechtTags(){
-        const { data } = await api.get(`tags`);
-        
+        const { data } = await api.get(`tags`) ; // .then(console.log).catch(console.log);
         setTags(data);
     }
+
+    fechtTags();
+
     return(
         <SafeAreaView 
             style={styles.container}
@@ -48,13 +51,13 @@ export function Tags(){
                     data={tags}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
-                        <Button
-                            title={ item.name }
-                            onPress={() => Alert.alert('Tag')}
+                        <TagButton
+                            title={ item.name_custom }
+                            onPress={() => {Alert.alert(`Está Tag foi criada em ${item.created_at}`)}}
                         />
                     )}
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
+                    numColumns={2}
+                    showsVerticalScrollIndicator={false}
                 />
 
                 <TouchableOpacity 
