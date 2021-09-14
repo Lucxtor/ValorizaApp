@@ -52,6 +52,7 @@ export function Confirmation(){
         console.log(token);
     }
     
+    loadToken()
     
     return (
         <SafeAreaView style={styles.container}>
