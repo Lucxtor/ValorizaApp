@@ -72,7 +72,7 @@ export function UserIdentification(){
                 nextScreen: 'Tags'
             });
         }catch{
-            return Alert.alert('Não foi possivel salvar o seu nome');
+            return Alert.alert('Não foi possivel efetuar o Login');
         }
     }
 

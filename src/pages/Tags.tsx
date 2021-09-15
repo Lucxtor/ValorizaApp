@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
     SafeAreaView, 
     Text, 
@@ -15,6 +15,7 @@ import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
 import api from '../services/api';
 import { TagButton } from '../components/TagButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface TagsProps {
     id: string;
@@ -26,6 +27,8 @@ interface TagsProps {
 
 export function Tags(){
     const [tags, setTags] = useState<TagsProps[]>([])
+    const [token, setToken] = useState<string>();
+    const [authToken, setAuthToken] = useState<string>();
 
     const navigation = useNavigation();
 
@@ -33,8 +36,19 @@ export function Tags(){
         navigation.navigate('UserIdentification')
     }
 
+    async function loadToken(){
+        const token = await AsyncStorage.getItem('@ValorizaApp:userToken');
+        setToken(token || '');
+    }
+    
+    loadToken()
+
+    useEffect(() => {
+        setAuthToken(`Bearer ${token}`)
+    }, [token])
+    
     async function fechtTags(){
-        const { data } = await api.get(`tags`) ; // .then(console.log).catch(console.log);
+        const { data } = await api.get(`tags`, { headers: { Authorization: authToken } }) ; // .then(console.log).catch(console.log);
         setTags(data);
     }
 

@@ -31,7 +31,6 @@ const emojis = {
 export function Confirmation(){
     const navigation = useNavigation();
     const routes = useRoute();
-    const [token, setToken] = useState<string>();
 
     const {
         title,
@@ -45,14 +44,6 @@ export function Confirmation(){
     function handleMoveOn(){
         navigation.navigate(nextScreen);
     }
-
-    async function loadToken(){
-        const token = await AsyncStorage.getItem('@ValorizaApp:userToken');
-        setToken(token || '');
-        console.log(token);
-    }
-    
-    loadToken()
     
     return (
         <SafeAreaView style={styles.container}>
@@ -67,10 +58,6 @@ export function Confirmation(){
 
                 <Text style={styles.subtitle}>
                     {subtitle}
-                </Text>
-
-                <Text>
-                    {token}
                 </Text>
 
                 <View style={styles.footer}>
