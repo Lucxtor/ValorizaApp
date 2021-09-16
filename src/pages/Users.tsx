@@ -12,38 +12,28 @@ import {
 } from 'react-native'
 
 import { Feather } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/core';
 import api from '../services/api';
 import { TagButton } from '../components/TagButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-interface TagsProps {
+interface UserProps {
     id: string;
     name: string;
-    created_at: Date;
-    updated_at: Date;
-    name_custom: string;
+    email: string;
 }
 
-interface Params {
-    userReciver: string;
-}
-
-export function Tags(){
-    const [tags, setTags] = useState<TagsProps[]>([]);
+export function Users(){
+    const [users, setUsers] = useState<UserProps[]>([]);
     const [token, setToken] = useState<string>();
     const [authToken, setAuthToken] = useState<string>();
 
-
     const navigation = useNavigation();
-    const routes = useRoute();
 
-    /*const {
-        userReciver
-    } = routes.params as Params*/
-
-    function handleStart(){
-        //navigation.navigate('UserIdentification');
+    function handleSelect(userReciverId: string){
+        navigation.navigate('Tags', {
+            userReciver: userReciverId
+        });
     }
 
     async function loadToken(){
@@ -57,16 +47,17 @@ export function Tags(){
         setAuthToken(`Bearer ${token}`);
     }, [token])
     
-    async function fechtTags(){
-        const { data } = await api.get(`tags`, { headers: { Authorization: authToken} }) ; // .then(console.log).catch(console.log);
+    async function fechtUsers(){
+        const { data } = await api.get(`Users`, { headers: { Authorization: authToken } }) ; // .then(console.log).catch(console.log);
+        Alert.alert(data);
         if(data){
-            setTags(data);
+            setUsers(data);
         } else {
             navigation.navigate('UserIdentification');
         }
     }
 
-    fechtTags();
+    fechtUsers();
 
     return(
         <SafeAreaView 
@@ -76,32 +67,24 @@ export function Tags(){
                 style={styles.wrapper}
             >
                 <Text>
-                    userReciver
-                    {token}
+                    {users}
                 </Text>
                 <FlatList
-                    data={tags}
+                    data={users}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
                         <TagButton
-                            title={ item.name_custom }
-                            onPress={() => {Alert.alert(`Está Tag foi criada em ${item.created_at}`)}}
+                            title={ item.name }
+                            onPress={() => {
+                                Alert.alert(`O email deste usuário é: \n${item.email}`);
+                                handleSelect(item.id)
+                            }}
                         />
                     )}
                     numColumns={2}
                     showsVerticalScrollIndicator={false}
                 />
-
-                <TouchableOpacity 
-                    style={styles.button} 
-                    activeOpacity={0.7}
-                    onPress={handleStart}
-                >
-                    <Feather 
-                        name="chevron-right" 
-                        style={styles.buttonIcon}
-                    />
-                </TouchableOpacity>
+                
             </View>
         </SafeAreaView>
     )

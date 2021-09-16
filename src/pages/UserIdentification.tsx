@@ -69,7 +69,7 @@ export function UserIdentification(){
                 subtitle: 'Agora vamos começar a cuidar das suas plantinhas com muito carinho!',
                 buttonTitle: 'Começar',
                 icon: 'smile',
-                nextScreen: 'Tags'
+                nextScreen: 'Users'
             });
         }catch{
             return Alert.alert('Não foi possivel efetuar o Login');

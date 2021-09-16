@@ -16,7 +16,13 @@ export function Welcome(){
     const navigation = useNavigation();
 
     function handleStart(){
-        navigation.navigate('UserIdentification')
+        navigation.navigate('Confirmation', {
+            title: 'Tudo Prontinho',
+            subtitle: 'Agora vamos ver quem são seus colegas de equipe!',
+            buttonTitle: 'Começar',
+            icon: 'smile',
+            nextScreen: 'Users'
+        });
     }
 
     return(
