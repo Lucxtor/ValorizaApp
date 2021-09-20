@@ -76,7 +76,7 @@ export function Tags(){
                 style={styles.wrapper}
             >
                 <Text>
-                    userReciver
+                    userReciver: 
                     {token}
                 </Text>
                 <FlatList

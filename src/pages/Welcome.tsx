@@ -21,7 +21,7 @@ export function Welcome(){
             subtitle: 'Agora vamos ver quem são seus colegas de equipe!',
             buttonTitle: 'Começar',
             icon: 'smile',
-            nextScreen: 'Users'
+            nextScreen: 'UserIdentification'
         });
     }
 

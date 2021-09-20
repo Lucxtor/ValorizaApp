@@ -21,6 +21,9 @@ interface UserProps {
     id: string;
     name: string;
     email: string;
+    admin: boolean;
+    created_at: Date;
+    updated_at: Date;
 }
 
 export function Users(){
@@ -49,7 +52,7 @@ export function Users(){
     
     async function fechtUsers(){
         const { data } = await api.get(`Users`, { headers: { Authorization: authToken } }) ; // .then(console.log).catch(console.log);
-        Alert.alert(data);
+        //Alert.alert(data);
         if(data){
             setUsers(data);
         } else {
@@ -67,7 +70,7 @@ export function Users(){
                 style={styles.wrapper}
             >
                 <Text>
-                    {users}
+                    {token}
                 </Text>
                 <FlatList
                     data={users}
