@@ -66,7 +66,7 @@ export function UserIdentification(){
             await AsyncStorage.setItem('@ValorizaApp:userToken', data);
             navigation.navigate('Confirmation', {
                 title: 'Tudo Prontinho',
-                subtitle: 'Agora vamos começar a cuidar das suas plantinhas com muito carinho!',
+                subtitle: 'Agora vamos começar a cuidar da sua relação com os colegas!',
                 buttonTitle: 'Começar',
                 icon: 'smile',
                 nextScreen: 'Users'

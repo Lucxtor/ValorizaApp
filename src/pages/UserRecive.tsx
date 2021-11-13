@@ -16,48 +16,31 @@ import { useNavigation } from '@react-navigation/core';
 import api from '../services/api';
 import { TagButton } from '../components/TagButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Compliment } from '../components/Compliment';
 
-interface UserProps {
-    id: string;
-    name: string;
-    email: string;
-    admin: boolean;
-    created_at: Date;
-    updated_at: Date;
-}
-
-export function Users(){
-    const [users, setUsers] = useState<UserProps[]>([]);
+export function UserRecive(){
+    const [compliment, setCompliment] = useState();
+    const [token, setToken] = useState<string>();
     const [authToken, setAuthToken] = useState<string>();
 
     const navigation = useNavigation();
 
-    function handleSelect(userReciverId: string, userReciverName: string){
-        navigation.navigate('Tags', {
-            userReciver_id: userReciverId,
-            userReciver_Name: userReciverName
-        });
+    async function loadToken(){
+        const token = await AsyncStorage.getItem('@ValorizaApp:userToken');
+        setToken(token || '');
     }
     
-    async function loadToken(){
-        await AsyncStorage.getItem('@ValorizaApp:userToken').then((response) => {
-            setAuthToken(`Bearer ${response}` || '');
-        }).catch((error) => {
-            console.log('erro', error);
-        })
-    }
+    loadToken()
 
     useEffect(() => {
-       loadToken()
-    }, [])
+        setAuthToken(`Bearer ${token}`);
+    }, [token])
     
     async function fechtUsers(){
         if(authToken){
-            const { data } = await api.get(`Users`, { headers: { Authorization: authToken } }) ; // .then(console.log).catch(console.log);
+            const { data } = await api.get(`users/compliments/receive`, { headers: { Authorization: authToken } }) ; // .then(console.log).catch(console.log);
             if(data){
-                setUsers(data);
-            } else {
-                navigation.navigate('UserIdentification');
+                setCompliment(data);
             }
         }
     }
@@ -74,22 +57,24 @@ export function Users(){
                 style={styles.wrapper}
             >
                 <Text>
-                    Selecione um usuário para elogiar:
+                    Você recebeu todos os elogios abaixo:
                 </Text>
+
                 <FlatList
-                    data={users}
+                    data={compliment}
                     keyExtractor={(item) => String(item.id)}
                     renderItem={({ item }) => (
-                        <TagButton
-                            title={ item.name }
+                        <Compliment
+                            tagName={item.tag.name}
+                            message={item.message}
                             onPress={() => {
-                                handleSelect(item.id, item.email)
+                                Alert.alert(`O usuário que enviou esse elogio é: \n${item.userSender.email}`);
                             }}
                         />
                     )}
-                    numColumns={2}
                     showsVerticalScrollIndicator={false}
-                />   
+                /> 
+
             </View>
         </SafeAreaView>
     )

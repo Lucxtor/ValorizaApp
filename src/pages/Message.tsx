@@ -16,34 +16,47 @@ import { useNavigation, useRoute } from '@react-navigation/core';
 import api from '../services/api';
 import { TagButton } from '../components/TagButton';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-interface TagsProps {
-    id: string;
-    name: string;
-    created_at: Date;
-    updated_at: Date;
-    name_custom: string;
-}
+import { TextInput } from 'react-native-gesture-handler';
 
 interface Params {
-    userReciver_id: string;
-    userReciver_name: string;
+    userReciver: string;
+    tag: string;
 }
 
-export function Tags(){
-    const [tags, setTags] = useState<TagsProps[]>([]);
+export function Message(){
     const [token, setToken] = useState<string>();
     const [authToken, setAuthToken] = useState<string>();
+    const [message, setMessage] = useState<string>();
 
 
     const navigation = useNavigation();
     const routes = useRoute();
 
     const {
-        userReciver_id,
-        userReciver_name
+        userReciver,
+        tag
     } = routes.params as Params
 
+    async function handleSubmit(){
+        const bodyParameters = {
+            tag_id: tag,
+            user_reciver: userReciver,
+            message: message
+        }
+        const { data } = await api.post(`compliments`, bodyParameters, { headers: { Authorization: authToken} })
+
+        navigation.navigate('Confirmation', {
+            title: 'Obrigado pelo seu feedback',
+            subtitle: 'Agora vamos retornar ao inicio e ver como está sua relação com os colegas',
+            buttonTitle: 'Voltar',
+            icon: 'smile',
+            nextScreen: 'Users'
+        });
+    }
+
+    function handleInputChangeMessage(value: string){
+        setMessage(value);
+    }
 
     async function loadToken(){
         const token = await AsyncStorage.getItem('@ValorizaApp:userToken');
@@ -55,24 +68,6 @@ export function Tags(){
     useEffect(() => {
         setAuthToken(`Bearer ${token}`);
     }, [token])
-    
-    async function fechtTags(){
-        const { data } = await api.get(`tags`, { headers: { Authorization: authToken} }) ; // .then(console.log).catch(console.log);
-        if(data){
-            setTags(data);
-        }
-    }
-
-    useEffect(() => {
-        fechtTags();
-    }, [authToken])
-
-    function handleSelect( tag_id: string ){
-        navigation.navigate('Message', {
-            userReciver: userReciver_id,
-            tag: tag_id
-        });
-    }
 
     return(
         <SafeAreaView 
@@ -82,22 +77,26 @@ export function Tags(){
                 style={styles.wrapper}
             >
                 <Text>
-                    Você está enviando um elogio para: { userReciver_name }
+                    Digite a mensagem que deseja enviar:
                 </Text>
-                <FlatList
-                    data={tags}
-                    keyExtractor={(item) => String(item.id)}
-                    renderItem={({ item }) => (
-                        <TagButton
-                            title={ item.name_custom }
-                            onPress={() => {
-                                handleSelect(item.id)}
-                            }
-                        />
-                    )}
-                    numColumns={2}
-                    showsVerticalScrollIndicator={false}
+                <Text>
+                    Enviando a tag { tag } para o usuario { userReciver }
+                </Text>
+                <TextInput
+                    placeholder="Digite sua mensagem aqui!"
+                    onChangeText={handleInputChangeMessage}
                 />
+
+                <TouchableOpacity 
+                    style={styles.button} 
+                    activeOpacity={0.7}
+                    onPress={handleSubmit}
+                >
+                    <Feather 
+                        name="chevron-right" 
+                        style={styles.buttonIcon}
+                    />
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )

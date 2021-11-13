@@ -7,6 +7,10 @@ import { UserIdentification } from '../pages/UserIdentification';
 import { Tags } from '../pages/Tags';
 import { Confirmation } from '../pages/Confirmation';
 import { Users } from '../pages/Users';
+import AuthRoutes from './tab.routes';
+import { UserSend } from '../pages/UserSend';
+import { UserRecive } from '../pages/UserRecive';
+import { Message } from '../pages/Message';
 
 const stackRoutes = createNativeStackNavigator();
 
@@ -30,8 +34,13 @@ const AppRoutes: React.FC = () => (
         />
 
         <stackRoutes.Screen
+            name="Compliments"
+            component={AuthRoutes}
+        />
+
+        <stackRoutes.Screen
             name="Users"
-            component={Users}
+            component={AuthRoutes}
         />
 
         <stackRoutes.Screen
@@ -40,8 +49,23 @@ const AppRoutes: React.FC = () => (
         />
 
         <stackRoutes.Screen
+            name="Message"
+            component={Message}
+        />
+
+        <stackRoutes.Screen
             name="Confirmation"
             component={Confirmation}
+        />
+
+        <stackRoutes.Screen
+            name="UserSend"
+            component={UserSend}
+        />
+
+        <stackRoutes.Screen
+            name="UserRecive"
+            component={UserRecive}
         />
 
     </stackRoutes.Navigator>
